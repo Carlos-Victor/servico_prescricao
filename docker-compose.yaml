@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+    postgres:
+        image: postgres:12-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: iclinicdb
+          POSTGRES_DB: prescricao
+        
+    prescription:
+        build:
+            context: .
+            dockerfile: ./docker/Dockerfile
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+        - /d/iclinic/source:/source
+        env_file:
+            - /iclinic/envs/PostgresSql.env
+            - /iclinic/envs/.env
+        ports:
+            - 8000:8000
+    

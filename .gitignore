@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+.Python
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+.DS_Store
+.coverage
+/.idea
