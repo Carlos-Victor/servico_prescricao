@@ -15,24 +15,9 @@ class CustomExceptionError(APIException):
             return message_list
 
     def __init__(self, code):
-        if code:
-            self.detail = {
-                "error": {
-                    "message": self.return_error_message(code),
-                    "code": code
-                }
+        self.detail = {
+            "error": {
+                "message": self.return_error_message(code),
+                "code": code
             }
-
-# def parse_metrics():
-
-# '{
-#   "clinic_id": 1,
-#   "clinic_name": "Clínica A",
-#   "physician_id": 1,
-#   "physician_name": "José",
-#   "physician_crm": "SP293893",
-#   "patient_id": 1,
-#   "patient_name": "Rodrigo",
-#   "patient_email": "rodrigo@gmail.com",
-#   "patient_phone": "(16)998765625"
-# }'
+        }

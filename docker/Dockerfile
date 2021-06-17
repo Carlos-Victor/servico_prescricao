@@ -26,7 +26,7 @@ RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
 
-COPY --chown=www-data:www-data ./docker/docker-entrypoint.sh /entrypoint.sh
+COPY ./docker/docker-entrypoint.sh /entrypoint.sh
 
 ARG POSTGRES_USER=''
 ARG POSTGRES_PASSWORD=''

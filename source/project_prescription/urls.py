@@ -18,6 +18,6 @@ from django.urls import path, include
 from project_prescription.router import router
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
 ]

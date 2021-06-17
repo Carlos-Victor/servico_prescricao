@@ -2,10 +2,8 @@ version: '3.3'
 services:
     postgres:
         image: postgres:12-alpine
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: iclinicdb
-          POSTGRES_DB: prescricao
+        env_file:
+            - /mnt/d/iclinic/envs/PostgresSql.env
         
     prescription:
         build:
@@ -19,4 +17,6 @@ services:
             - /mnt/d/iclinic/envs/.env
         ports:
             - 8000:8000
+        depends_on:
+            - postgres
     

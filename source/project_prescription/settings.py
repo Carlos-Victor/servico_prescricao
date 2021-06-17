@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'qls_$a0!$=hyu%m3sm=o(u8io7@uqe78u_p(=_cau8(_5tx&2b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -83,7 +83,7 @@ DATABASES = {
         "USER": config('POSTGRES_USER', cast=str),
         "PASSWORD": config('POSTGRES_PASSWORD', cast=str),
         "HOST": config('POSTGRES_HOST', cast=str),
-        "PORT": config('POSTGRES_PORT', cast=int)
+        "PORT": config('POSTGRES_PORT', cast=int),
     },
 }
 
@@ -139,6 +139,13 @@ HOST_DEPENDENTS = (
     ('PHYSICIANS', config('PHYSICIANS_HOST', cast=str)),
     ('PATIENTS', config('PATIENTS_HOST', cast=str)),
     ('METRICS', config('METRICS_HOST', cast=str)),
+)
+
+TIMEOUT_DEPENDENTS = (
+    ('CLINICS', 5),
+    ('PHYSICIANS', 4),
+    ('PATIENTS', 3),
+    ('METRICS', 6),
 )
 
 # Internationalization

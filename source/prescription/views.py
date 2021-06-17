@@ -1,14 +1,15 @@
 from django.shortcuts import render
 from django.db import transaction
 import requests
+import json
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
-from prescription.models import Prescription
 from prescription.serializers import PrescriptionsSerializer
 from prescription.utils import CustomExceptionError
-
+from prescription.integrations.dependents import send_metrics
+from prescription.models import Prescription
 # Create your views here.
 
 
@@ -16,20 +17,20 @@ from prescription.utils import CustomExceptionError
 class PrescriptionViewSet(viewsets.ModelViewSet):
     queryset = Prescription.objects.all()
     serializer_class = PrescriptionsSerializer
+    http_method_names = ['post', 'head', 'options']
 
-
-    @transaction.atomic
+    # @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
+            data = json.loads(json.dumps(serializer.data))
             instance = Prescription.objects.create(
-                clinic=request.data['clinic'].get('id'),
-                physician=request.data['physician'].get('id'),
-                patient=request.data['patient'].get('id'),
-                text=request.data['text']
+                clinic=data.get('clinic').get('id').get('id'),
+                physician=data.get('physician').get('id').get('id'),
+                patient=data.get('patient').get('id').get('id'),
+                text=data.get('text')
             )
-            # integrate_metrics(instance)
+            send_metrics(instance)
             serializer = self.get_serializer(instance)
-            return Response(serializer.data)
-            # REALIZAR CONSULTA DE APLICAÇÕES EXTERNAS
+            return Response(serializer.data, status.HTTP_201_CREATED)
         raise CustomExceptionError("01")
