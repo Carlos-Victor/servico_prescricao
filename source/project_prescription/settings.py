@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'prescription'
+    'prescription',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -105,6 +106,40 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+ERROR_REST = (
+    ('01', 'malformed request'),
+    ('02', 'physician not found'),
+    ('03', 'patient not found'),
+    ('04', 'metrics service not available'),
+    ('05', 'physicians service not available'),
+    ('06', 'patients service not available'),
+)
+
+TRIES = (
+    ('CLINICS', 3),
+    ('PHYSICIANS', 2),
+    ('PATIENTS', 2),
+    ('METRICS', 5),
+)
+
+TOKENS_BEARER = (
+    ('CLINICS', config('CLINICS_BEARER', cast=str)),
+    ('PHYSICIANS', config('PHYSICIANS_BEARER', cast=str)),
+    ('PATIENTS', config('PATIENTS_BEARER', cast=str)),
+    ('METRICS', config('METRICS_BEARER', cast=str)),
+)
+
+HOST_DEPENDENTS = (
+    ('CLINICS', config('CLINICS_HOST', cast=str)),
+    ('PHYSICIANS', config('PHYSICIANS_HOST', cast=str)),
+    ('PATIENTS', config('PATIENTS_HOST', cast=str)),
+    ('METRICS', config('METRICS_HOST', cast=str)),
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

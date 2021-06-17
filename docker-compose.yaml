@@ -15,8 +15,8 @@ services:
         volumes:
         - /d/iclinic/source:/source
         env_file:
-            - /iclinic/envs/PostgresSql.env
-            - /iclinic/envs/.env
+            - /mnt/d/iclinic/envs/PostgresSql.env
+            - /mnt/d/iclinic/envs/.env
         ports:
             - 8000:8000
     
