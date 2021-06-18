@@ -3,20 +3,17 @@ services:
     postgres:
         image: postgres:12-alpine
         env_file:
-            - /mnt/d/iclinic/envs/PostgresSql.env
+            - ./envs/PostgresSql.env
         
     prescription:
         build:
             context: .
             dockerfile: ./docker/Dockerfile
-        command: python manage.py runserver 0.0.0.0:8000
-        volumes:
-        - /d/iclinic/source:/source
         env_file:
-            - /mnt/d/iclinic/envs/PostgresSql.env
-            - /mnt/d/iclinic/envs/.env
+            - ./envs/PostgresSql.env
+            - ./envs/back.env
         ports:
-            - 8000:8000
+            - 5000:8000
         depends_on:
             - postgres
     

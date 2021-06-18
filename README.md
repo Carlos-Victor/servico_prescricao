@@ -3,94 +3,68 @@
 
 A missão da iClinic é descomplicar a saúde no Brasil levando mais gestão a clínicas e consultórios através da tecnologia e, com isso, possibilitar que médicos e outros profissionais promovam mais saúde aos seus pacientes.
 
+### Pré Requisitos
++ [python](https://www.python.org/)
++ [Django](https://www.djangoproject.com/)
++ [Django rest](https://www.django-rest-framework.org/)
++ [requests](https://docs.python-requests.org/en/master/)
++ [gunicorn](https://docs.gunicorn.org/en/stable/run.html)
++ [psycopg2-binary](https://pypi.org/project/psycopg2-binary/)
++ [httmock](https://pypi.org/project/httmock/)
++ [drf-yasg](https://drf-yasg.readthedocs.io/en/stable/)
 
-## Rode Localmente
-
-Clone o projeto
-
-```bash
-  git clone https://github.com/Carlos-Victor/servico_prescricao
-```
-
-Entre na source do projeto
-
-```bash
-  cd source
-```
-
-Instale as dependências
-
-```bash
-  pip install -r requirements.txt
-```
-
-
-Entre com os valores das variaveis de ambiente
-
-```bash
-export POSTGRES_USER=''
-export POSTGRES_PASSWORD=''
-export POSTGRES_HOST=''
-export POSTGRES_PORT='0'
-export POSTGRES_DB=''
-export CLINICS_BEARER=''
-export PHYSICIANS_BEARER=''
-export PATIENTS_BEARER=''
-export METRICS_BEARER=''
-export CLINICS_HOST=''
-export PHYSICIANS_HOST=''
-export PATIENTS_HOST=''
-export METRICS_HOST=''
-```
-
-Inicie o servidor
-
-```bash
-python manage.py runserver 0.0.0.0:8000
-```
-
-  ## Environment Váriaveis
-
-
-`API_KEY`
+ ## Váriaveis de Ambiente
 
 `POSTGRES_USER`
+
 `POSTGRES_PASSWORD`
+
 `POSTGRES_HOST`
+
 `POSTGRES_PORT`
+
 `POSTGRES_DB`
+
 `CLINICS_BEARER`
+
 `PHYSICIANS_BEARER`
+
 `PATIENTS_BEARER`
+
 `METRICS_BEARER`
+
 `CLINICS_HOST`
+
 `PHYSICIANS_HOST`
+
 `PATIENTS_HOST`
+
 `METRICS_HOST`
+
+`DEBUG`
 
 
 ## Instalação
 
-O Projeto possui docker e docker-compose, para ser instalado deve seguir o compose que se encontra na raiz do projeto
-Nele se encontra uma configuração do projeto em Django e um Banco de Dados em Postgres
-
 ```bash 
     docker-compose build
-    docker-compose up -d
+    docker-compose up
 ```
-      
+### **Para acessar digite no navegador http://localhost:5000**
 ## Rotas
 
 |Verb  |URI Pattern              
 :----:|-------------------------|
 | POST  | /prescriptions
 
+### **Você pode acessar /swagger para verificar a documentação**
+
 ## Uso/Exemplo
 
 Realize um Post para o endpoint /prescriptions 
 ```bash
 curl -X POST \
-  http://localhost:8000/prescriptions \
+  http://localhost:5000/prescriptions \
   -H 'Content-Type: application/json' \
   -d '{
   "clinic": {
@@ -118,6 +92,7 @@ Para executar os testes com o projeto em docker
 ```bash
   docker-compose run prescription python manage.py test
 ```
+## **Porém no entrypoint da aplicação os testes já estão sendo executados**
 
   
 ## Relacionado

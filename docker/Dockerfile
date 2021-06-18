@@ -13,8 +13,6 @@ RUN apk update && \
         zlib-dev \
         lcms2-dev \
         openjpeg-dev \
-        gcc \
-        wget \
 		zlib \
         tzdata
 
@@ -42,5 +40,7 @@ ARG PHYSICIANS_HOST=''
 ARG PATIENTS_HOST=''
 ARG METRICS_HOST=''
 
+RUN python /source/manage.py collectstatic --no-input -v 0
 
 ENTRYPOINT ["/entrypoint.sh"]
+CMD gunicorn -b 0.0.0.0:8000 project_prescription.wsgi --log-level debug --timeout=300 --max-requests=1200 --keep-alive=5
