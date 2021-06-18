@@ -1,9 +1,8 @@
 from django.conf import settings
 
 import requests
-from requests.adapters import HTTPAdapter
+from requests.exceptions import ConnectTimeout
 from requests.models import HTTPError
-from requests.sessions import session
 
 from prescription.utils import CustomExceptionError
 
@@ -36,7 +35,7 @@ def request_clinics(id):
             "clinic_name": data.get('name')
         }
         return data
-    except HTTPError:
+    except (HTTPError, ConnectTimeout):
         return None
 
 def request_physician(id):
@@ -53,8 +52,8 @@ def request_physician(id):
             "physician_crm":  data.get('crm')
         }
         return data
-    except HTTPError as err:
-        if err.response.status_code == 404:
+    except (HTTPError, ConnectTimeout) as err:
+        if err.response != None and err.response.status_code == 404:
             raise CustomExceptionError("02")
         raise CustomExceptionError("05")
 
@@ -73,8 +72,8 @@ def request_patient(id):
             "patient_phone": data.get('phone')
         }
         return data
-    except HTTPError as err:
-        if err.response.status_code == 404:
+    except (HTTPError, ConnectTimeout) as err:
+        if err.response != None and err.response.status_code == 404:
             raise CustomExceptionError("03")
         raise CustomExceptionError("06")
 
@@ -86,7 +85,7 @@ def request_metrics(data):
         response = http.post(f'{host}/metrics', data=data, headers=headers, timeout=dict(settings.TIMEOUT_DEPENDENTS).get('METRICS'))
         response.raise_for_status()
         return response.json()
-    except HTTPError:
+    except (HTTPError, ConnectTimeout):
         raise CustomExceptionError("04")
 
 def parse_metrics(list_dependents):
