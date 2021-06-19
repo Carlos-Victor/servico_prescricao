@@ -80,7 +80,7 @@ def request_patient(id):
             "patient_phone": data.get('phone')
         }
         return data
-    except (HTTPError, RetryError, ConnectTimeout)as err:
+    except (HTTPError, RetryError, ConnectTimeout) as err:
         if err.response.status_code == 404:
             raise CustomExceptionError("03")
         raise CustomExceptionError("06")
