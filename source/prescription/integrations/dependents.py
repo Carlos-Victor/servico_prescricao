@@ -1,7 +1,8 @@
 from django.conf import settings
 
 import requests
-from requests.exceptions import ConnectTimeout
+from requests.exceptions import ConnectTimeout, RetryError
+from requests.packages.urllib3.util.retry import Retry
 from requests.models import HTTPError
 
 from prescription.utils import CustomExceptionError
@@ -9,7 +10,14 @@ from prescription.utils import CustomExceptionError
 
 def set_session(name_endpoint):
     session = requests.Session()
-    http_adapter = requests.adapters.HTTPAdapter(max_retries=dict(settings.TRIES).get(name_endpoint))
+    retry = Retry(
+        total=dict(settings.TRIES).get(name_endpoint),
+        read=dict(settings.TRIES).get(name_endpoint),
+        connect=dict(settings.TRIES).get(name_endpoint),
+        status_forcelist=(500, 502, 503),
+    )
+    http_adapter = requests.adapters.HTTPAdapter(max_retries=retry)
+    session.mount('http://', http_adapter)
     session.mount('https://', http_adapter)
     return session
 
@@ -35,7 +43,7 @@ def request_clinics(id):
             "clinic_name": data.get('name')
         }
         return data
-    except (HTTPError, ConnectTimeout):
+    except (HTTPError, ConnectTimeout, RetryError):
         return None
 
 def request_physician(id):
@@ -52,8 +60,8 @@ def request_physician(id):
             "physician_crm":  data.get('crm')
         }
         return data
-    except (HTTPError, ConnectTimeout) as err:
-        if err.response != None and err.response.status_code == 404:
+    except (HTTPError, RetryError, ConnectTimeout) as err:
+        if err.response.status_code == 404:
             raise CustomExceptionError("02")
         raise CustomExceptionError("05")
 
@@ -72,8 +80,8 @@ def request_patient(id):
             "patient_phone": data.get('phone')
         }
         return data
-    except (HTTPError, ConnectTimeout) as err:
-        if err.response != None and err.response.status_code == 404:
+    except (HTTPError, RetryError, ConnectTimeout)as err:
+        if err.response.status_code == 404:
             raise CustomExceptionError("03")
         raise CustomExceptionError("06")
 
@@ -85,7 +93,7 @@ def request_metrics(data):
         response = http.post(f'{host}/metrics', data=data, headers=headers, timeout=dict(settings.TIMEOUT_DEPENDENTS).get('METRICS'))
         response.raise_for_status()
         return response.json()
-    except (HTTPError, ConnectTimeout):
+    except (HTTPError, RetryError, ConnectTimeout):
         raise CustomExceptionError("04")
 
 def parse_metrics(list_dependents):
