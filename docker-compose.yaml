@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+    postgres:
+        image: postgres:12-alpine
+        env_file:
+            - ./envs/PostgresSql.env
+        
+    prescription:
+        build:
+            context: .
+            dockerfile: ./docker/Dockerfile
+        env_file:
+            - ./envs/PostgresSql.env
+            - ./envs/back.env
+        ports:
+            - 5000:8000
+        depends_on:
+            - postgres
+    
