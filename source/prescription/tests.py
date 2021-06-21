@@ -88,12 +88,6 @@ class PrescriptionTest(APITestCase):
 
 
     def test_response_clinics_timeout(self):
-        settings.TRIES = (
-            ('CLINICS', 0.001),
-            ('PHYSICIANS', 0.001),
-            ('PATIENTS', 0.001),
-            ('METRICS', 0.001),
-        )
         with HTTMock(MockClinics.mock_clinic_504, MockPhysicians.mock_physician_200, MockPatients.mock_patient_200, MockMetrics.mock_metrics_201):
             request = self.client.post('http://testserver/prescriptions/', data={"clinic": {"id": 504},"physician": {"id": 200},"patient": {"id": 200},"text": "Dipirona 1x ao dia"}, format='json')
             self.assertEqual(201, request.status_code)
